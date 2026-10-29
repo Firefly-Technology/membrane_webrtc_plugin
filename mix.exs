@@ -51,7 +51,9 @@ defmodule Membrane.WebRTC.Plugin.Mixfile do
       {:membrane_rtp_opus_plugin, "~> 0.10.0"},
 
       # Other dependencies
-      {:ex_webrtc, "~> 0.15.0"},
+      {:ex_webrtc,
+       github: "Firefly-Technology/ex_webrtc",
+       ref: "13d2fcbf11ce5f08c14ce7e4a62fda3dc6f1ddd8"},
       {:corsica, "~> 2.0"},
       {:bandit, "~> 1.2"},
       {:websock_adapter, "~> 0.5.0"},

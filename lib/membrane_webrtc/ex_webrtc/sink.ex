@@ -22,7 +22,8 @@ defmodule Membrane.WebRTC.ExWebRTCSink do
               ice_servers: [],
               ice_port_range: [],
               ice_ip_filter: [],
-              ice_aggressive_nomination: []
+              ice_aggressive_nomination: [],
+              flush_rtp_on_eos: [spec: boolean(), default: false]
 
   def_input_pad :input,
     accepted_format: Membrane.RTP,
@@ -50,7 +51,8 @@ defmodule Membrane.WebRTC.ExWebRTCSink do
        ice_servers: opts.ice_servers,
        ice_port_range: opts.ice_port_range,
        ice_ip_filter: opts.ice_ip_filter,
-       ice_aggressive_nomination: opts.ice_aggressive_nomination
+       ice_aggressive_nomination: opts.ice_aggressive_nomination,
+       flush_rtp_on_eos: opts.flush_rtp_on_eos
      }}
   end
 
@@ -199,6 +201,14 @@ defmodule Membrane.WebRTC.ExWebRTCSink do
   @impl true
   def handle_buffer(pad, buffer, _ctx, state) do
     state = send_buffer(pad, buffer, state)
+    {[], state}
+  end
+
+  @impl true
+  def handle_end_of_stream(_pad, _ctx, state) do
+    # Membrane reports EOS to the parent after this callback returns. Only
+    # temporary sinks that explicitly need a drain barrier wait on transport.
+    if state.flush_rtp_on_eos, do: :ok = PeerConnection.flush_rtp(state.pc)
     {[], state}
   end
 

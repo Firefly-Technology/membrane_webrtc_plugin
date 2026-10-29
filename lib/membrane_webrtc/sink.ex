@@ -98,6 +98,11 @@ defmodule Membrane.WebRTC.Sink do
                 spec: boolean(),
                 default: false
               ],
+              flush_rtp_on_eos: [
+                spec: boolean(),
+                default: false,
+                description: "Wait for queued RTP sends before reporting end-of-stream."
+              ],
               payload_rtp: [
                 spec: boolean(),
                 default: true
@@ -138,7 +143,8 @@ defmodule Membrane.WebRTC.Sink do
         ice_servers: opts.ice_servers,
         ice_port_range: opts.ice_port_range,
         ice_ip_filter: opts.ice_ip_filter,
-        ice_aggressive_nomination: opts.ice_aggressive_nomination
+        ice_aggressive_nomination: opts.ice_aggressive_nomination,
+        flush_rtp_on_eos: opts.flush_rtp_on_eos
       })
 
     {[spec: spec], %{payload_rtp: opts.payload_rtp, video_codec: opts.video_codec}}
